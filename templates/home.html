@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+ {% block body %}
+<div class="jumbotron text-center">
+	<h1>Welcome</h1>
+	<p class="lead">This is a simple application to manage a classroom.</p>
+	{% if session.logged_in == NULL %}
+		<a href="/register" class="btn btn-primary btn-lg">Register</a>
+		<a href="/login" class="btn btn-success btn-lg">login</a>
+	{% endif %}
+</div>
+{% endblock %}
