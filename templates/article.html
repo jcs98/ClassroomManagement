@@ -3,7 +3,9 @@
 <h1>{{article.title}}</h1>
 <small>Written by {{article.author}} on {{article.create_date}}</small>
 <hr>
- <div>
+ <div class="border p-3 text-secondary">
 	{{article.body | safe}}
 </div>
+<hr>
+{% include 'comments.html' %}
  {% endblock %}

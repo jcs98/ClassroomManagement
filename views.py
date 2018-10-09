@@ -32,14 +32,25 @@ def articles():
 	# Close connection
 	cur.close()
  # Single Article
-@app.route('/article/<string:id>/')
+@app.route('/article/<string:id>/', methods=['GET', 'POST'])
 def article(id):
 	# Create cursor
 	cur = mysql.connection.cursor()
+	if request.method == 'POST':
+		comment = request.form['comment']
+		if(comment != ''):
+			# Execute
+			cur.execute("INSERT INTO comments(article_id, body, author) VALUES(%s, %s, %s)", (id, comment, session['username']))
+			# Commit to DB
+			mysql.connection.commit()
  	# Get article
 	result = cur.execute("SELECT * FROM articles WHERE id=%s", [id])
  	article = cur.fetchone()
- 	return  render_template('article.html', article=article)
+	cur.execute("SELECT * FROM comments WHERE article_id=%s ORDER BY id", [id])
+	comments = cur.fetchall()
+	# Close connection
+	cur.close()
+ 	return  render_template('article.html', article=article, comments=comments)
  # Register
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -185,3 +196,17 @@ def delete_article(id):
 	cur.close()
  	flash('Article Deleted', 'success')
  	return redirect(url_for('dashboard'))
+
+ # Delete Comment
+@app.route('/delete_comment/<string:id>/<string:article_id>', methods=['POST'])
+@is_logged_in
+def delete_comment(id, article_id):
+	# Create cursor
+	cur = mysql.connection.cursor()
+ 	# Execute
+	cur.execute("DELETE FROM comments WHERE id=%s", [id])
+ 	# Commit to DB
+	mysql.connection.commit()
+ 	# Close connection
+	cur.close()
+ 	return redirect(url_for('article', id=article_id))
