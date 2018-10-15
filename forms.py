@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, TextAreaField, PasswordField, validators
+from wtforms import Form, StringField, TextAreaField, PasswordField, validators, BooleanField
  # Register Form Class
 class RegisterForm(Form):
 	name = StringField('Name', [validators.Length(min=1, max=50)])
@@ -9,6 +9,7 @@ class RegisterForm(Form):
 			validators.EqualTo('confirm', message='Passwords do not match')
 		])
 	confirm = PasswordField('Confirm Password')
+	isTeacher = BooleanField()
  # Article Form Class
 class ArticleForm(Form):
 	title = StringField('Title', [validators.Length(min=1, max=200)])

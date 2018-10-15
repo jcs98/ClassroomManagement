@@ -63,7 +63,10 @@ def register():
  		# Create cursor
 		cur = mysql.connection.cursor()
  		# Execute query
-		cur.execute("INSERT INTO users(name , email, username, password) VALUES(%s, %s, %s, %s)", (name, email, username, password))
+		if form.isTeacher.data:
+			cur.execute("INSERT INTO teachers(name , email, username, password) VALUES(%s, %s, %s, %s)", (name, email, username, password))
+		else:
+			cur.execute("INSERT INTO users(name , email, username, password) VALUES(%s, %s, %s, %s)", (name, email, username, password))
  		# Commit to DB
 		mysql.connection.commit()
  		# Close connection
@@ -81,7 +84,10 @@ def login():
  		# Create cursor
 		cur = mysql.connection.cursor()
  		# Get user by username
-		result = cur.execute("SELECT * FROM users WHERE username = %s", [username])
+		if request.form.get('isTeacher'):
+			result = cur.execute("SELECT * FROM teachers WHERE username = %s", [username])
+		else:
+			result = cur.execute("SELECT * FROM users WHERE username = %s", [username])
  		if result > 0:
 			# Get stored hash
 			data = cur.fetchone()
@@ -91,8 +97,13 @@ def login():
 				# Passed
 				session['logged_in'] = True
 				session['username'] = username
+				if request.form.get('isTeacher'):
+					session['isTeacher'] = True
+				else:
+					session['isTeacher'] = False
+
  				flash('You are now logged in', 'success')
-				return redirect(url_for('dashboard'))
+				return redirect(url_for('articles'))
 			else:
 				error = 'Invlaid login'
 				return render_template('login.html', error=error)

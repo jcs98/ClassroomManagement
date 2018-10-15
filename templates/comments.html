@@ -2,7 +2,11 @@
 <ul>
 {% for comment in comments %}
 	<li class="list-group-item">
+		{% if comment.author == article.author %}
 		<i class="fas fa-comment text-primary mr-3"></i>
+		{% else %}
+		<i class="fas fa-question-circle text-primary mr-3"></i>
+		{% endif %}
     {{comment.body}}
     {% if comment.author == session.username %}
 		<form class="float-right" action="{{url_for('delete_comment', id=comment.id, article_id=comment.article_id)}}" method="post">

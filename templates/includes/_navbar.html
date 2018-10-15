@@ -15,9 +15,11 @@
       </ul>
       <ul class="navbar-nav ml-auto">
         {% if session.logged_in %}
+        {% if session.isTeacher %}
         <li class="nav-item">
           <a href="/dashboard" class="nav-link">Dashboard</a>
         </li>
+        {% endif %}
         <li class="nav-item">
           <a href="/logout" class="nav-link">Logout</a>
         </li>
