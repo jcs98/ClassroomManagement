@@ -48,9 +48,11 @@ def article(id):
  	article = cur.fetchone()
 	cur.execute("SELECT * FROM comments WHERE article_id=%s ORDER BY id", [id])
 	comments = cur.fetchall()
+	cur.execute("SELECT * FROM submissions WHERE assignment_id=%s", [id])
+	submissions = cur.fetchall()
 	# Close connection
 	cur.close()
- 	return  render_template('article.html', article=article, comments=comments)
+ 	return  render_template('article.html', article=article, comments=comments, submissions=submissions)
  # Register
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -221,3 +223,18 @@ def delete_comment(id, article_id):
  	# Close connection
 	cur.close()
  	return redirect(url_for('article', id=article_id))
+
+# Submit Assignment
+@app.route('/submit_assignment/<string:assignment_id>', methods=['POST'])
+@is_logged_in
+def submit_assignment(assignment_id):
+	# Create cursor
+	cur = mysql.connection.cursor()
+ 	# Execute
+	cur.execute("INSERT INTO submissions(assignment_id, student_name) VALUES(%s, %s)", (int(assignment_id), session['username']))
+ 	# Commit to DB
+	mysql.connection.commit()
+ 	# Close connection
+	cur.close()
+	flash('Assignment Submitted!', 'success')
+ 	return redirect(url_for('articles'))

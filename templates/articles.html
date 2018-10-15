@@ -6,6 +6,12 @@
 	<li class="list-group-item">
 		<i class="far fa-clipboard mr-3"></i>
 		<a href="article/{{article.id}}">{{article.title}}</a>
+		{% if session.isTeacher == False %}
+		<form class="d-inline float-right ml-3" action="{{url_for('submit_assignment', assignment_id=article.id)}}" method="post">
+			<!-- <input type="hidden" name="_method" value="SUBMIT"> -->
+			<input type="submit" value="Submit" class="btn btn-primary">
+		</form>
+		{% endif %}
 		<small class="float-right text-muted">by {{article.author}} on {{article.create_date}}</small>
 	</li>
 {%  endfor%}

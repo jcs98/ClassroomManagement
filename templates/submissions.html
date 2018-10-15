@@ -1,0 +1,10 @@
+<h3>Submitted By</h3>
+<ul>
+{% for submission in submissions %}
+	<li class="list-group-item">
+		<i class="fas fa-check text-primary mr-3"></i>
+    {{submission.student_name}}
+    <small class="float-right text-muted pt-2">at {{submission.submit_date}}</small>
+	</li>
+{%  endfor%}
+</ul>

@@ -8,4 +8,8 @@
 </div>
 <hr>
 {% include 'comments.html' %}
+{% if session.username == article.author %}
+<hr>
+{% include 'submissions.html' %}
+{% endif %}
  {% endblock %}
