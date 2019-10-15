@@ -23,8 +23,8 @@ def articles():
 	cur = mysql.connection.cursor()
  	# Get articles
 	result = cur.execute("SELECT * FROM articles")
- 	articles = cur.fetchall()
- 	if result > 0:
+	articles = cur.fetchall()
+	if result > 0:
 		return render_template('articles.html', articles=articles)
 	else:
 		msg = 'No Articles Found'
@@ -45,14 +45,14 @@ def article(id):
 			mysql.connection.commit()
  	# Get article
 	result = cur.execute("SELECT * FROM articles WHERE id=%s", [id])
- 	article = cur.fetchone()
+	article = cur.fetchone()
 	cur.execute("SELECT * FROM comments WHERE article_id=%s ORDER BY id", [id])
 	comments = cur.fetchall()
 	cur.execute("SELECT * FROM submissions WHERE assignment_id=%s", [id])
 	submissions = cur.fetchall()
 	# Close connection
 	cur.close()
- 	return  render_template('article.html', article=article, comments=comments, submissions=submissions)
+	return  render_template('article.html', article=article, comments=comments, submissions=submissions)
  # Register
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -73,8 +73,8 @@ def register():
 		mysql.connection.commit()
  		# Close connection
 		cur.close()
- 		flash('You are now registered and can log in', 'success')
- 		return redirect(url_for('login'))
+		flash('You are now registered and can log in', 'success')
+		return redirect(url_for('login'))
 	return render_template('register.html', form=form)
  # Login
 @app.route('/login', methods=['GET', 'POST'])
@@ -90,7 +90,7 @@ def login():
 			result = cur.execute("SELECT * FROM teachers WHERE username = %s", [username])
 		else:
 			result = cur.execute("SELECT * FROM users WHERE username = %s", [username])
- 		if result > 0:
+		if result > 0:
 			# Get stored hash
 			data = cur.fetchone()
 			password = data['password']
@@ -104,17 +104,17 @@ def login():
 				else:
 					session['isTeacher'] = False
 
- 				flash('You are now logged in', 'success')
+				flash('You are now logged in', 'success')
 				return redirect(url_for('articles'))
 			else:
 				error = 'Invlaid login'
 				return render_template('login.html', error=error)
 			# Close connection
 			cur.close()
- 		else:
+		else:
 			error = 'Username not found'
 			return render_template('login.html', error=error)
- 	return render_template('login.html')
+	return render_template('login.html')
  # Check if user logged in
 def is_logged_in(f):
 	@wraps(f)
@@ -140,8 +140,8 @@ def dashboard():
 	cur = mysql.connection.cursor()
  	# Get articles
 	result = cur.execute("SELECT * FROM articles WHERE author=%s", (session['username'],))
- 	articles = cur.fetchall()
- 	if result > 0:
+	articles = cur.fetchall()
+	if result > 0:
 		return render_template('dashboard.html', articles=articles)
 	else:
 		msg = 'No Articles Found'
@@ -164,9 +164,9 @@ def add_article():
 		mysql.connection.commit()
  		# Close connection
 		cur.close()
- 		flash('Article Created', 'success')
- 		return redirect(url_for('dashboard'))
- 	return render_template('add_article.html', form=form)
+		flash('Article Created', 'success')
+		return redirect(url_for('dashboard'))
+	return render_template('add_article.html', form=form)
  # Edit Article
 @app.route('/edit_article/<string:id>', methods=['GET', 'POST'])
 @is_logged_in
@@ -175,13 +175,13 @@ def edit_article(id):
 	cur = mysql.connection.cursor()
  	# Get article by id
 	result = cur.execute("SELECT * FROM articles WHERE id=%s", [id])
- 	article = cur.fetchone()
+	article = cur.fetchone()
  	# Get form
 	form = ArticleForm(request.form)
  	# Populate article form fields
 	form.title.data = article['title']
 	form.body.data = article['body']
- 	if request.method == 'POST' and form.validate():
+	if request.method == 'POST' and form.validate():
 		title = request.form['title']
 		body = request.form['body']
  		# Create cursor
@@ -192,9 +192,9 @@ def edit_article(id):
 		mysql.connection.commit()
  		# Close connection
 		cur.close()
- 		flash('Article Updated', 'success')
- 		return redirect(url_for('dashboard'))
- 	return render_template('edit_article.html', form=form)
+		flash('Article Updated', 'success')
+		return redirect(url_for('dashboard'))
+	return render_template('edit_article.html', form=form)
  # Delete Article
 @app.route('/delete_article/<string:id>', methods=['POST'])
 @is_logged_in
@@ -207,8 +207,8 @@ def delete_article(id):
 	mysql.connection.commit()
  	# Close connection
 	cur.close()
- 	flash('Article Deleted', 'success')
- 	return redirect(url_for('dashboard'))
+	flash('Article Deleted', 'success')
+	return redirect(url_for('dashboard'))
 
  # Delete Comment
 @app.route('/delete_comment/<string:id>/<string:article_id>', methods=['POST'])
@@ -222,7 +222,7 @@ def delete_comment(id, article_id):
 	mysql.connection.commit()
  	# Close connection
 	cur.close()
- 	return redirect(url_for('article', id=article_id))
+	return redirect(url_for('article', id=article_id))
 
 # Submit Assignment
 @app.route('/submit_assignment/<string:assignment_id>', methods=['POST'])
@@ -237,4 +237,4 @@ def submit_assignment(assignment_id):
  	# Close connection
 	cur.close()
 	flash('Assignment Submitted!', 'success')
- 	return redirect(url_for('articles'))
+	return redirect(url_for('articles'))
